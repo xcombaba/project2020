@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('git checkout') {
             steps {
-                git 'https://github.com/tkibnyusuf/java-project.git'
+                echo 'git 'https://github.com/tkibnyusuf/java-project.git'
             }
         }
         stage('build') {
@@ -17,10 +17,23 @@ pipeline {
                 sh 'cd MywebApp && mvn test'
             }
         }
+        stage('code quality') {
+          steps {
+          withsonarQubeEnv('sonar') {
+        sh "mvn -f MywebApp/pom.xml sonar:sonar"
+           }
+          }
+        }
+        stage("quality gate") {
+            steps {
+                waitForQualtyGate abortPipeline: true
+            }
+        }       
+        
         stage('deploy to tomcat') {
             steps {
-                deploy adapters: [tomcat9(credentialsId: 'tomcat4', path: '', url: 'http://3.87.182.188:8080/')], contextPath: 'webapp', war: '**/*.war'
+                'deploy adapters: [tomcat9(credentialsId: 'tomcat', path: '', url: 'http://3.87.182.188:8080/')], contextPath: 'webapp', war: '**/*.war''
             }    
         }    
     }
-}    
+}     
