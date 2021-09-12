@@ -30,10 +30,31 @@ pipeline {
             waitForQualityGate abortPipeline: true
             }
         } 
-        }    
+        }
+         stage('Artifactory configuration') {
+            steps {
+                
+                rtServer (
+
+                    id: "jfrog",
+
+                    url: "http://18.212.224.24.8082/artifactory",
+
+                    credentialsId: "jfrog",
+                    bypassProxy: true
+                )
+            }
+        }
+        stage('Deploy Artifacts') {
+            steps {
+                     rtUpload (
+            serverId:  'jfrog'             
+                     )
+            }
+        }     
         stage('deploy to tomcat') {
             steps {
-                deploy adapters: [tomcat9(credentialsId: 'tomcat4', path: '', url: 'http://3.87.182.188:8080/')], contextPath: 'webapp', war: '**/*.war'
+                deploy adapters: [tomcat9(credentialsId: 'tomcat4', path: '', url: 'http://54.86.121.142:8080/')], contextPath: 'webapp', war: '**/*.war'
             }    
         }    
     }
