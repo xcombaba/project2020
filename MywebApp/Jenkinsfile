@@ -40,7 +40,7 @@ pipeline {
 
                     url: 'http://18.212.224.24.8082/artifactory', 
                     bypassProxy: true,
-                    credentialsId: 'Artifactory',
+                    credentialsId: 'ee7e64a7-3de0-4661-b9ce-edc1a5805cb2',
                     timeout: 300
                 )
             }
@@ -50,14 +50,14 @@ pipeline {
                      rtUpload (
             serverId:"Artifactory" , 
              spec: '''{ 
-             "files": [
-                 {
-                "pattern": "*.war", 
-                "target": "logic-ops-lab-libs-snapshot-local"
-                 }
+                     "files": [
+                      {
+                     "pattern": "*.war", 
+                     "target": "logic-ops-lab-libs-snapshot-local"
+                      }
                       ]
-                   }''',
-                  )       
+                    }''',
+                )       
               
             }
         }
