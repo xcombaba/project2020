@@ -38,10 +38,9 @@ pipeline {
 
                     id: "Artifactory",
 
-                    url: 'http://18.212.224.24.8082/artifactory',
-                    username: 'tkibnyusuf',
-                    password: '@Dovember13', 
+                    url: 'http://18.212.224.24.8082/artifactory', 
                     bypassProxy: true,
+                    credentialsId: 'Artifactory',
                     timeout: 300
                 )
             }
