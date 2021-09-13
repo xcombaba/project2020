@@ -31,27 +31,47 @@ pipeline {
             }
         } 
         }
-         stage('Artifactory configuration') {
+         stage('Server'){
             steps {
                 
                 rtServer (
 
                     id: "jfrog",
 
-                    url: "http://18.212.224.24.8082/artifactory",
-
-                    credentialsId: "jfrog",
-                    bypassProxy: true
+                    url: 'http://18.212.224.24.8082/artifactory',
+                    username: 'admin',
+                    password: '@Dovember13',
+                    bypassProxy: true,
+                    timeout: 300
                 )
             }
         }
-        stage('Deploy Artifacts') {
+        stage('Upload'){
             steps {
                      rtUpload (
-            serverId:  'jfrog'             
-                     )
+            serverId:"jfrog" , 
+             spec: ***:{ 
+             "files": [
+                 {
+                "pattern": "*.war", 
+                "target": "logic-ops-lab-libs-snapshot-local"
+                 }
+                      ]
+                   }***,
+                  )       
+              
             }
-        }     
+        }
+        
+        stage ('Publish build info') {
+            steps {
+                rtPublishBuildInfo (
+                    serverId: "jfrog"
+                    )
+                    }
+                }
+        
+        
         stage('deploy to tomcat') {
             steps {
                 deploy adapters: [tomcat9(credentialsId: 'tomcat', path: '', url: 'http://54.86.121.142:8080/')], contextPath: 'webapp', war: '**/*.war'
