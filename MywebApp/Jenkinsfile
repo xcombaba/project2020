@@ -38,7 +38,7 @@ pipeline {
 
              rtServer (
          
-              id: "Artifactory",
+              id: "new-test",
      
                url: "http://http://18.212.224.24:8082/artifactory",
 
@@ -55,7 +55,7 @@ pipeline {
 
                  rtUpload (
 
-                     serverId: 'Artifactory',
+                     serverId: 'new-test',
                        spec: ''' {
                                "files":[
                                     {
