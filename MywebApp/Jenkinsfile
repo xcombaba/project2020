@@ -50,14 +50,14 @@ pipeline {
             steps {
                      rtUpload (
             serverId:"Artifactory" , 
-             spec: ***:{ 
+             spec: '''{ 
              "files": [
                  {
                 "pattern": "*.war", 
                 "target": "logic-ops-lab-libs-snapshot-local"
                  }
                       ]
-                   }***,
+                   }''',
                   )       
               
             }
