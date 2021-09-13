@@ -49,15 +49,13 @@ pipeline {
         stage('Upload'){
             steps {
                      rtUpload (
-            serverId:"jfrog" , 
-             spec: ***:{ 
+            serverId:"jfrog" ,  
              "files": [
                  {
                 "pattern": "*.war", 
                 "target": "logic-ops-lab-libs-snapshot-local"
                  }
                       ]
-                   }***,
                   )       
               
             }
