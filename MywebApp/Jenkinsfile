@@ -51,8 +51,7 @@ pipeline {
                      rtUpload (
             serverId:"jfrog" ,  
              "files": [
-                 {
-                "pattern": "*.war", 
+                 { 
                 "target": "logic-ops-lab-libs-snapshot-local"
                  }
                       ]
