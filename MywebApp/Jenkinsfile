@@ -42,7 +42,7 @@ pipeline {
      
                url: "http://http://18.212.224.24:8082/artifactory",
 
-               credentialsId: "ee7e64a7-3de0-4661-b9ce-edc1a5805cb2",
+               credentialsId: "100f6bdf-6876-419c-9636-2aa1b664353f",
                 bypassProxy: true,
                 timeout: 300
 
@@ -60,7 +60,7 @@ pipeline {
                                "files":[
                                     {
                                     "pattern": "MywebApp/target/MywebApp.war",
-                                    "target": "jenkins-integration/"
+                                    "target": "jenkins-integration/MywebApp.war"
                                     }
                                  ]
                         }''',
