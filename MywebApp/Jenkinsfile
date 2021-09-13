@@ -2,79 +2,76 @@ pipeline {
     agent any
 
     stages {
-        stage('git checkout') {
+        stage('Git checkout') {
             steps {
                 git 'https://github.com/tkibnyusuf/java-project.git'
             }
         }
-        stage('build') {
+      stage('Build') {
             steps {
-                sh 'cd MywebApp && mvn clean package'
+               sh ''' cd MywebApp && mvn clean package'''
             }
         }
-        stage('test') {
+      stage('Test') {
             steps {
-                sh 'cd MywebApp && mvn test'
+                sh ' cd MywebApp && mvn test'
             }
         }
-         stage('code Quality scan') {
+        stage ('Code Qualty Scan') {
+            
+           steps {
+                  withSonarQubeEnv('sonar') {
+             sh "mvn -f MywebApp/pom.xml sonar:sonar"
+                      
+               }
+            }
+       }
+        stage('Quality gate') {
+            
           steps {
-          withSonarQubeEnv('sonar') {
-        sh "mvn -f MywebApp/pom.xml sonar:sonar"
-           }
+                 waitForQualityGate abortPipeline: true
+              }
+          }
+        stage('Artifactory configuration') {
+
+           steps {
+
+             rtServer (
+         
+              id: "Artifactory",
+     
+               url: "http://http://18.212.224.24:8082/artifactory",
+
+               credentialsId: "	ee7e64a7-3de0-4661-b9ce-edc1a5805cb2",
+                bypassProxy: true,
+                timeout: 300
+
+            )
           }
         }
-        stage("Quality gate") {
-            steps {
-                timeout(time: 30, unit: 'SECONDS') {
-            waitForQualityGate abortPipeline: true
-            }
-        } 
-        }
-         stage('Server'){
-            steps {
-                
-                rtServer (
+        stage('Artifact Upload') {
 
-                    id: "Artifactory",
+             steps {
 
-                    url: 'http://18.212.224.24.8082/artifactory', 
-                    bypassProxy: true,
-                    credentialsId: 'ee7e64a7-3de0-4661-b9ce-edc1a5805cb2',
-                    timeout: 300
-                )
-            }
+                 rtUpload (
+
+                     serverId: 'Artifactory',
+                       spec: ''' {
+                               "files":[
+                                    {
+                                    "pattern": "MywebApp/target/MywebApp.war",
+                                    "target": "jenkins-integration/"
+                                    }
+                                 ]
+                        }''',
+                 )
+             }
         }
-        stage('Upload'){
-            steps {
-                     rtUpload (
-            serverId:"Artifactory" , 
-             spec: '''{ 
-                     "files": [
-                      {
-                     "pattern": "*.war", 
-                     "target": "logic-ops-lab-libs-snapshot-local"
-                      }
-                      ]
-                    }''',
-                )       
-              
-            }
-        }
-        
-        stage ('Publish build info') {
-            steps {
-                rtPublishBuildInfo (
-                    serverId: "Artifactory"
-                    )
-                    }
-                }
-        
         
         stage('deploy to tomcat') {
             steps {
                 deploy adapters: [tomcat9(credentialsId: 'tomcat', path: '', url: 'http://54.86.121.142:8080/')], contextPath: 'webapp', war: '**/*.war'
             }    
         }    
-    }
-}   
+     }
+ }
