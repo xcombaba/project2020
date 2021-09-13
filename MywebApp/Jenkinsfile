@@ -42,7 +42,7 @@ pipeline {
      
                url: "http://http://18.212.224.24:8082/artifactory",
 
-               credentialsId: "	ee7e64a7-3de0-4661-b9ce-edc1a5805cb2",
+               credentialsId: "ee7e64a7-3de0-4661-b9ce-edc1a5805cb2",
                 bypassProxy: true,
                 timeout: 300
 
