@@ -54,10 +54,11 @@ pipeline {
             }
         }
         
-        stage ('Publish build info') {
+         stage('Deploy Artifacts') {
             steps {
-                rtPublishBuildInfo (
-                    serverId: "jfrog"
+                     rtUpload (
+            serverId:  'jfrog'             
+                
                     )
                     }
                 }
