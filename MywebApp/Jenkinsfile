@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('Git checkout') {
             steps {
-                git 'https://github.com/tkibnyusuf/java-project.git'
+                git 'https://github.com/xcombaba/project2020.git'
             }
         }
       stage('Build') {
@@ -17,61 +17,14 @@ pipeline {
                 sh ' cd MywebApp && mvn test'
             }
         }
-        stage ('Code Qualty Scan') {
-            
-           steps {
-                  withSonarQubeEnv('sonar') {
-             sh "mvn -f MywebApp/pom.xml sonar:sonar"
-                      
-               }
-            }
-       }
-        stage('Quality gate') {
-            
-          steps {
-                 waitForQualityGate abortPipeline: true
-              }
-          }
-        stage('Artifactory configuration') {
-
-           steps {
-
-             rtServer (
-         
-              id: "new-test",
-     
-               url: "http://http://18.212.224.24:8082/artifactory",
-
-               credentialsId: "100f6bdf-6876-419c-9636-2aa1b664353f",
-                bypassProxy: true,
-                timeout: 300
-
-            )
-          }
-        }
-        stage('Artifact Upload') {
-
-             steps {
-
-                 rtUpload (
-
-                     serverId: 'new-test',
-                       spec: ''' {
-                               "files":[
-                                    {
-                                    "pattern": "MywebApp/target/MywebApp.war",
-                                    "target": "jenkins-integration/MywebApp.war"
-                                    }
-                                 ]
-                        }''',
-                 )
-             }
-        }
         
-        stage('deploy to tomcat') {
+      stage('deploy to tomcat') {
             steps {
-                deploy adapters: [tomcat9(credentialsId: 'tomcat', path: '', url: 'http://54.86.121.142:8080/')], contextPath: 'webapp', war: '**/*.war'
-            }    
-        }    
-     }
- }
+                deploy adapters: [tomcat9(credentialsId: '43a37aed-28b0-460d-b03f-aa97f81bfe1c', path: '', url: 'http://52.90.2.75:8080/')], contextPath: 'myapp', war: '**/*.war'
+            }
+         }
+      }
+      
+    }
+    
+    
